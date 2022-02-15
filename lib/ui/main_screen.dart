@@ -1,7 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'colors.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'myrecipes/my_recipes_list.dart';
 import 'recipes/recipe_list.dart';
@@ -29,26 +29,14 @@ class _MainScreenState extends State<MainScreen> {
     getCurrentIndex();
   }
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-    saveCurrentIndex();
-  }
-
   void saveCurrentIndex() async {
-    //1
     final prefs = await SharedPreferences.getInstance();
-    //2
     prefs.setInt(prefSelectedIndexKey, _selectedIndex);
   }
 
   void getCurrentIndex() async {
-    //1
     final prefs = await SharedPreferences.getInstance();
-    //2
     if (prefs.containsKey(prefSelectedIndexKey)) {
-      //3
       setState(() {
         final index = prefs.getInt(prefSelectedIndexKey);
         if (index != null) {
@@ -56,6 +44,13 @@ class _MainScreenState extends State<MainScreen> {
         }
       });
     }
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+    saveCurrentIndex();
   }
 
   @override
@@ -79,11 +74,9 @@ class _MainScreenState extends State<MainScreen> {
       bottomNavigationBar: BottomNavigationBar(
         items: [
           BottomNavigationBarItem(
-              icon: SvgPicture.asset(
-                'assets/images/icon_recipe.svg',
-                color: _selectedIndex == 0 ? green : Colors.grey,
-                semanticsLabel: 'Recipes',
-              ),
+              icon: SvgPicture.asset('assets/images/icon_recipe.svg',
+                  color: _selectedIndex == 0 ? green : Colors.grey,
+                  semanticsLabel: 'Recipes'),
               label: 'Recipes'),
           BottomNavigationBarItem(
               icon: SvgPicture.asset('assets/images/icon_bookmarks.svg',
