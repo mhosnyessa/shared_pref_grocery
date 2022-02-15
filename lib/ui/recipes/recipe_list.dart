@@ -1,19 +1,17 @@
-import 'dart:convert';
+import 'dart:collection';
 import 'dart:math';
 
+import 'package:chopper/chopper.dart';
 import 'package:flutter/material.dart';
 import '../widgets/custom_dropdown.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../network/model_response.dart';
 import '../../network/recipe_model.dart';
 import '../../network/recipe_service.dart';
 import '../recipe_card.dart';
 import '../recipes/recipe_details.dart';
 import '../colors.dart';
-import 'dart:convert';
-import 'package:chopper/chopper.dart';
-import '../../network/model_response.dart';
-import 'dart:collection';
 
 class RecipeList extends StatefulWidget {
   const RecipeList({Key? key}) : super(key: key);
@@ -63,14 +61,6 @@ class _RecipeListState extends State<RecipeList> {
         }
       });
   }
-
-  // // TODO: Delete getRecipeData()
-  // Future<APIRecipeQuery> getRecipeData
-  //(String query, int from, int to) async {
-  //   final recipeJson = await RecipeService().getRecipes(query, from, to);
-  //   final recipeMap = json.decode(recipeJson);
-  //   return APIRecipeQuery.fromJson(recipeMap);
-  // }
 
   @override
   void dispose() {
@@ -203,9 +193,7 @@ class _RecipeListState extends State<RecipeList> {
     if (searchTextController.text.length < 3) {
       return Container();
     }
-    // TODO: change with new response
     return FutureBuilder<Response<Result<APIRecipeQuery>>>(
-      // TODO: change with new RecipeService
       future: RecipeService.create().queryRecipes(
           searchTextController.text.trim(),
           currentStartPosition,
@@ -223,10 +211,9 @@ class _RecipeListState extends State<RecipeList> {
           }
 
           loading = false;
-          // 1
+          // Hit an error
           if (false == snapshot.data?.isSuccessful) {
             var errorMessage = 'Problems getting data';
-            // 2
             if (snapshot.data?.error != null &&
                 snapshot.data?.error is LinkedHashMap) {
               final map = snapshot.data?.error as LinkedHashMap;
@@ -240,16 +227,12 @@ class _RecipeListState extends State<RecipeList> {
               ),
             );
           }
-          // 3
           final result = snapshot.data?.body;
           if (result == null || result is Error) {
-            // Hit an error
             inErrorState = true;
             return _buildRecipeList(context, currentSearchList);
           }
-// 4
           final query = (result as Success).value;
-
           inErrorState = false;
           if (query != null) {
             currentCount = query.count;
@@ -302,7 +285,7 @@ class _RecipeListState extends State<RecipeList> {
           builder: (context) {
             return const RecipeDetails();
           },
-        ));
+        ),);
       },
       child: recipeCard(recipe),
     );

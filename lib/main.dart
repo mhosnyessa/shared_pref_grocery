@@ -6,7 +6,6 @@ import 'ui/main_screen.dart';
 
 Future<void> main() async {
   _setupLogging();
-
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
@@ -28,8 +27,8 @@ class MyApp extends StatelessWidget {
       title: 'Recipes',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        brightness: Brightness.light,
-        primaryColor: Colors.white,
+          brightness: Brightness.light,
+          primaryColor: Colors.white,
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
