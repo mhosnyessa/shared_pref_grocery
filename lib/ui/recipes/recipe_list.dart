@@ -1,4 +1,3 @@
-import 'dart:collection';
 import 'dart:math';
 
 import 'package:chopper/chopper.dart';
@@ -91,11 +90,13 @@ class _RecipeListState extends State<RecipeList> {
       color: Colors.white,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: <Widget>[
-            _buildSearchCard(),
-            _buildRecipeLoader(context),
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              _buildSearchCard(),
+              _buildRecipeLoader(context),
+            ],
+          ),
         ),
       ),
     );
@@ -211,27 +212,13 @@ class _RecipeListState extends State<RecipeList> {
           }
 
           loading = false;
-          // Hit an error
-          if (false == snapshot.data?.isSuccessful) {
-            var errorMessage = 'Problems getting data';
-            if (snapshot.data?.error != null &&
-                snapshot.data?.error is LinkedHashMap) {
-              final map = snapshot.data?.error as LinkedHashMap;
-              errorMessage = map['message'];
-            }
-            return Center(
-              child: Text(
-                errorMessage,
-                textAlign: TextAlign.center,
-                style: const TextStyle(fontSize: 18.0),
-              ),
-            );
-          }
           final result = snapshot.data?.body;
-          if (result == null || result is Error) {
+          // Hit an error
+          if (result is Error) {
             inErrorState = true;
             return _buildRecipeList(context, currentSearchList);
           }
+          // final query = (result as Success).value;
           final query = (result as Success).value;
           inErrorState = false;
           if (query != null) {
@@ -281,11 +268,14 @@ class _RecipeListState extends State<RecipeList> {
     final recipe = hits[index].recipe;
     return GestureDetector(
       onTap: () {
-        Navigator.push(topLevelContext, MaterialPageRoute(
-          builder: (context) {
-            return const RecipeDetails();
-          },
-        ),);
+        Navigator.push(
+          topLevelContext,
+          MaterialPageRoute(
+            builder: (context) {
+              return const RecipeDetails();
+            },
+          ),
+        );
       },
       child: recipeCard(recipe),
     );
